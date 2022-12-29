@@ -6,3 +6,4 @@ Libraries
 2. Matplotlib.pyplot
 3. Sklearn
 4. Pandas
+5. Pytorch
