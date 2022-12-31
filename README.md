@@ -1,5 +1,5 @@
 # Linear-Regression-Model
-Implementation of a simple linear regression machine learning model to predict the output y of a (almost) linear line in the form of y = ax + b
+Implementation of a simple linear regression machine learning model to predict the output y of a (almost) linear line in the form of y = ax + b. (kinda not working)
 
 Libraries
 1. Numpy
