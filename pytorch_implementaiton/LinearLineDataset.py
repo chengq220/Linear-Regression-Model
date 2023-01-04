@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import Dataset
 import pandas as pd
-
+from torch.utils.data import TensorDataset
 
 """Custom dataset class"""
 
@@ -13,8 +13,7 @@ class LinearLineDataset(Dataset):
 
         """
         self.dataset = pd.read_csv(csv_file_dir)
-        self.features,self.target = self.minMaxNormalization(self.dataset)
-        self.transform = transform
+        self.features, self.target = self.minMaxNormalization(self.dataset)
 
     def minMaxNormalization(self,dataset):
         x, y = dataset.iloc[:,0],dataset.iloc[:,1]
@@ -26,14 +25,10 @@ class LinearLineDataset(Dataset):
         return len(self.dataset)
 
     def __getitem__(self, idx):
-        sample = [self.features[idx],self.target[idx]]
+        sample = [[self.features[idx]],[self.target[idx]]]
         return torch.FloatTensor(sample)
 
-"""
-
-testing
-linedataset = LinearLineDataset("./linear_line.csv")
-print(linedataset.__len__())
-print(linedataset.__getitem__(250))
-
-"""
+    def __getdataset__(self):
+        x = torch.from_numpy(self.features.to_numpy()).reshape(len(self.features),1).float()
+        y = torch.from_numpy(self.target.to_numpy()).reshape(len(self.target), 1).float()
+        return TensorDataset(x, y)

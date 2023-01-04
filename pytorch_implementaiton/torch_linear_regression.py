@@ -15,24 +15,16 @@ class LinearRegression(torch.nn.Module):
         predict_y = self.linear(x)
         return predict_y
 
-#manipulate the dataset to fit the requirements of pytorch
-#dataset = LinearLineDataset("../linear_line.csv")
-#train_loader = DataLoader(dataset,batch_size=6,shuffle=True)
+#import the dataset and manipulte it to fit the requirements of pytorch
+dataset = LinearLineDataset("../linear_line.csv")
 
-#import the dataset
-dataset = pd.read_csv("../linear_line.csv")
-x_min,x_max = dataset.iloc[:,0].min(),dataset.iloc[:,0].max()
-x = (dataset.iloc[:,0] - x_min)/(x_max-x_min)
-x = x.to_numpy()
-y = dataset.iloc[:,1].to_numpy()
+#test-train split
+train_size = int(0.8 * dataset.__len__())
+test_size = int(dataset.__len__() - train_size)
+train_dataset,test_dataset = torch.utils.data.random_split(dataset.__getdataset__(), [train_size, test_size])
 
-#convert numpy to tensor
-x_t = torch.from_numpy(x).reshape(len(x),1).float()
-y_t = torch.from_numpy(y).reshape(len(y),1).float()
-
-#create the dataset loader
-tensor_dataset = TensorDataset(x_t, y_t)
-train_loader = DataLoader(tensor_dataset,batch_size=5,shuffle=True)
+train_loader = DataLoader(train_dataset,batch_size=6,shuffle=True)
+test_loader = DataLoader(test_dataset)
 
 #the linear model with one layer
 linear_model = LinearRegression()
@@ -46,12 +38,15 @@ epoch = 300
 loss_value = []
 
 for i in range(epoch):
-    for x_b,y_b in train_loader:
+    for i, (x_b,y_b) in enumerate(train_loader):
         # compute the prediction
         y_pred = linear_model(x_b)
 
         # compute the loss function
         loss = criterion(y_pred, y_b)
+
+        if i%10==0:
+            print("loss at this step is", loss)
         loss_value.append(loss.detach())
 
         # clear any gradient from the previous pass through gradient descent
@@ -61,8 +56,13 @@ for i in range(epoch):
         loss.backward()
         optimizer.step()
 
-print(loss_value[len(loss_value)-1])
+#test-cases validation
+for i, (x,y) in enumerate(test_loader):
+    y_pred = linear_model(x)
+    print("y: ", y, " y_pred:", y_pred)
 
-#make predictions
-preds = linear_model(x_t)
-print(preds[100])
+#normalize the custom prediction data
+value = (303.0 - 1.0)/ (300.0 - 1.0)
+new_var = Variable(torch.Tensor([[value]]))
+pred_y = linear_model(new_var)
+print("predict (after training)", 4, linear_model(new_var).item())
