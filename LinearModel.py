@@ -8,7 +8,6 @@ class LinearModel:
         # of variables (thetas)
         self.theta = np.random.rand(x) #random weights initialization
         self.alpha = 0.1               #learning rate
-        self.regularization = 10       #regularization parameters
 
     #update the weights of the hypothesis
     def train(self,dataset):
@@ -17,7 +16,6 @@ class LinearModel:
         x = (x-x.min())/(x.max()-x.min())
 
         y = dataset.iloc[:, -1]
-        y = (y-y.min())/(y.max()-y.min())
 
         #add the bias term to the linear regression model
         bias = np.ones_like(x.iloc[:,0]).reshape(len(x.iloc[:,0]),1)
@@ -42,11 +40,11 @@ class LinearModel:
 
     def train_model(self, x, y):
         m = len(x)
-        epoch = 50
+        epoch = 500
         for i in range(epoch): #running for 25 epochs
         #the loss function with MSE
             loss = np.power(np.subtract(self.predict(x),np.asarray(y)),2)
-            loss = np.sum(loss) / (2*m) + (self.regularization / 2 * m) * np.sum(x**2)
+            loss = np.sum(loss) / (2*m)
 
             #print("epoch ", i, " loss is ", loss)
 
@@ -58,7 +56,7 @@ class LinearModel:
         a = (np.subtract(self.predict(x), np.asarray(y))).tolist()
         for i in range(len(x.iloc[:,0])):
             b = x.iloc[i,:]
-            gradient += (a[i] * b) + (self.regularization/len(x) * x.iloc[i,:])
+            gradient += (a[i] * b)
         return gradient
 
     def predict(self,input):
@@ -76,5 +74,3 @@ class LinearModel:
 
     def __str__(self) -> str:
         return "Theta is: {}".format(self.theta)
-
-

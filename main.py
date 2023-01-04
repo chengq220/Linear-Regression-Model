@@ -14,5 +14,8 @@ plt.show()
 #Linear model with two weights
 model = LinearModel(2)
 model.train(dataset)
+print(model.predict_discrete(1.01))
+
+#pytorch implementation of the linear regression model
 
 
