@@ -65,4 +65,4 @@ for i, (x,y) in enumerate(test_loader):
 value = (303.0 - 1.0)/ (300.0 - 1.0)
 new_var = Variable(torch.Tensor([[value]]))
 pred_y = linear_model(new_var)
-print("predict (after training)", 4, linear_model(new_var).item())
+print("predict (after training)", 303, linear_model(new_var).item())
